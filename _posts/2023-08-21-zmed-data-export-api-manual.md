@@ -3,7 +3,7 @@ title: zMed Data Export API Manual
 date: 2023-08-18 15:20:00 +0530
 categories: [BI-Tool, API]
 tags: [api, bi, tool, analytics, user, manual]
-author: ayush
+author: zmed
 ---
 
 # zMed API User Manual
