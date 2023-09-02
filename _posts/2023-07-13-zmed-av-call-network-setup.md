@@ -26,8 +26,8 @@ Update your firewall settings to facilitate the flow of media traffic to and fro
 
 1. For audio and video communication, configure your firewall to allow outbound `UDP` ports `3478`, `13478`, `5500` and `19302​–19309`.
 2. To facilitate web traffic and user authentication, permit outbound `UDP` and `TCP` traffic on port `443`, `13478` and `5500`.
-**
-Please note that there are no IP limitations on these ports.
+
+Please ensure that there are no IP restrictions or bandwidth limitations on these ports.
 
 `In cases where UDP ports are blocked, the system will automatically switch to using TCP. However, it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`
 
