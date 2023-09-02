@@ -9,11 +9,11 @@ author: zmed
 
 # Setup your network for zMed AV Call and IP Camera Low latency
 
-This document is specifically meant for hospital IT administrators who wish to acquire knowledge on configuring and overseeing their network to ensure a seamless experience for users during zMed Calls and achieve low-latency IP Camera viewing.
+This document is meant for hospital IT administrators to configure and oversee their network to ensure a seamless experience for users during zMed Audio Video Calls and to achieve low-latency IP Camera viewing.
 
-In order to ensure top-notch zMed Calls, it's crucial to configure your network to enable efficient communication between zMed AV Calls and the infrastructure of zMed & Hospital. To accomplish this, please consider the following recommendations:
+In order to ensure high quality Audio Video calls without drop in zMed, it's crucial to configure your network to enable efficient communication between the Hospital Network that the end user is using to access zMed application and zMed servers. To accomplish this, please consider the following recommendations:
 
-1. Ensure that zMed AV Call traffic enjoys a direct and efficient connection to the internet.
+1. Ensure that zMed AV Call traffic has a direct and efficient connection to the public internet.
 2. Avoid the use of proxies, packet inspection, protocol analyzers, and quality of service (QoS) measures.
 3. Continuously assess and enhance latency, bandwidth, and your Wi-Fi network for optimal performance.
 
@@ -21,13 +21,15 @@ In order to ensure top-notch zMed Calls, it's crucial to configure your network 
 
 ### Setup outbound ports for media traffic
 
+Audio video calls and IP Camera Low Latency mode uses STUN and TURN servers. 
 Update your firewall settings to facilitate the flow of media traffic to and from your hospital with the following steps:
 
-1. For audio and video communication, configure your firewall to allow outbound `UDP` ports `3478`, `13478`, `5500` and `19302​–19309`.
-2. To facilitate web traffic and user authentication, permit outbound `UDP` and `TCP` traffic on port `443`, `13478` and `5500`.
+1. For audio and video communication, configure your firewall to** allow outbound `UDP` ports `3478`, `13478`, `5500` and `19302​–19309`.**
+2. To facilitate web traffic and user authentication, **permit outbound `UDP` and `TCP` traffic on port `443`, `13478` and `5500`.
+**
+Please note that there are no IP limitations on these ports.
 
-Please note that there are no IP limitations on these ports. 
-`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However, it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`
+`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However,** it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`**
 
 ### Authorize Access to Uniform Resource Locators (URLs)
 
@@ -36,7 +38,7 @@ Ensure that there are no restrictions within your hospital network or the networ
 1. stun.l.google.com
 2. *.zmed.tech
 
-It is important to note that there should be no limitations or restrictions on the mentioned domains for the proper functioning of the `STUN` and `TURN` protocols.
+It is important to note that there should be no limitations or restrictions,** bandwidth and rate limiting,** on the mentioned domains for the proper functioning of the `STUN` and `TURN` protocols.
 
 ### Review bandwidth requirements for AV Calls
 
