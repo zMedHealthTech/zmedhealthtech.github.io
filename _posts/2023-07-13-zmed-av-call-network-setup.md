@@ -11,7 +11,7 @@ author: zmed
 
 This document is specifically meant for hospital IT administrators who wish to acquire knowledge on configuring and overseeing their network to ensure a seamless experience for users during zMed Calls and achieve low-latency IP Camera viewing.
 
-In order to ensure top-notch zMed Calls meetings, it's crucial to configure your network to enable efficient communication between zMed AV Calls and the infrastructure of zMed & Hospital. To accomplish this, please consider the following recommendations:
+In order to ensure top-notch zMed Calls, it's crucial to configure your network to enable efficient communication between zMed AV Calls and the infrastructure of zMed & Hospital. To accomplish this, please consider the following recommendations:
 
 1. Ensure that zMed AV Call traffic enjoys a direct and efficient connection to the internet.
 2. Avoid the use of proxies, packet inspection, protocol analyzers, and quality of service (QoS) measures.
@@ -27,7 +27,7 @@ Update your firewall settings to facilitate the flow of media traffic to and fro
 2. To facilitate web traffic and user authentication, permit outbound `UDP` and `TCP` traffic on port `443`, `13478` and `5500`.
 
 Please note that there are no IP limitations on these ports. 
-`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However, it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall meeting quality.`
+`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However, it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`
 
 ### Authorize Access to Uniform Resource Locators (URLs)
 
