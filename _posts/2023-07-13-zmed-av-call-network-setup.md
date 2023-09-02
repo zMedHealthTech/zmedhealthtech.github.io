@@ -29,7 +29,7 @@ Update your firewall settings to facilitate the flow of media traffic to and fro
 **
 Please note that there are no IP limitations on these ports.
 
-`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However,** it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`**
+`In cases where UDP ports are blocked, the system will automatically switch to using TCP. However, it's important to be aware that prolonged use of TCP or proxied TCP may lead to a deterioration in overall call quality.`
 
 ### Authorize Access to Uniform Resource Locators (URLs)
 
@@ -38,7 +38,7 @@ Ensure that there are no restrictions within your hospital network or the networ
 1. stun.l.google.com
 2. *.zmed.tech
 
-It is important to note that there should be no limitations or restrictions,** bandwidth and rate limiting,** on the mentioned domains for the proper functioning of the `STUN` and `TURN` protocols.
+It is important to note that there should be no limitations or restrictions, bandwidth and rate limiting, on the mentioned domains for the proper functioning of the `STUN` and `TURN` protocols.
 
 ### Review bandwidth requirements for AV Calls
 
