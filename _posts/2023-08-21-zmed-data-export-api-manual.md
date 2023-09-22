@@ -22,6 +22,7 @@ author: zmed
     - [Logout API](#logout-api)
     - [Logout of all users API](#logout-of-all-users-api)
     - [Change password API](#change-password-api)
+    - [Change roles API](#change-roles-api)
   - [Account APIs](#account-apis)
     - [Logs API](#logs-api)
     - [View Rate Limits (for own account)](#view-rate-limits-for-own-account)
@@ -31,6 +32,9 @@ author: zmed
   - [Query APIs](#query-apis)
     - [All Forms API](#all-forms-api)
     - [All ICE Elements API](#all-ice-elements-api)
+    - [All Units API](#all-units-api)
+    - [All Users API](#all-users-api)
+    - [All Patients API](#all-patients-api)
     - [Forms API](#forms-api)
     - [Device Data - Monitor API](#device-data---monitor-api)
     - [Device Data - Anesthesia/Ventilator API](#device-data---anesthesiaventilator-api)
@@ -39,11 +43,13 @@ author: zmed
     - [Progress notes API](#progress-notes-api)
     - [Fluid Balance API](#fluid-balance-api)
     - [OT Anesthesia API](#ot-anesthesia-api)
+    - [Ambulance GPS API](#ambulance-gps-api)
   - [Error codes](#error-codes)
     - [General Errors](#general-errors)
     - [Role-based access](#role-based-access)
     - [Authentication](#authentication)
     - [Rate Limiters](#rate-limiters)
+    - [All patients query API](#all-patients-query-api)
     - [Forms query API](#forms-query-api)
     - [Device Data - Monitor query API](#device-data---monitor-query-api)
     - [Device Data - Anesthesia/Ventilator query API](#device-data---anesthesiaventilator-query-api)
@@ -52,6 +58,7 @@ author: zmed
     - [Progress notes query API](#progress-notes-query-api)
     - [Fluid Balance query API](#fluid-balance-query-api)
     - [OT Anesthesia query API](#ot-anesthesia-query-api)
+    - [Ambulance GPS query API](#ambulance-gps-query-api)
   - [Public Schema](#public-schema)
 
 ## Roles
@@ -227,6 +234,17 @@ _Note:_ Adding, removing users, setting, changing the rate limits can only be do
 | `newPassword` | desired new password of the authenticated user | `required` |
 | `confirmNewPassword` | desired new password of the authenticated user (should be same as `newPassword`) | `required` |
 
+### Change roles API
+
+- Method: `PATCH`
+- Base URL: `/api/v1/auth/roles`
+- Authentication required: `true`
+
+| Params | Description | Comments | Sample |
+| :-- | :-- | :-- | :-- |
+| `username` | username of the authenticated user | `required` | `user1` or `user2@xyz.in`
+| `roles` | Array of the new roles | `required` | `[0,1,6]`
+
 ## Account APIs
 
 ### Logs API
@@ -306,6 +324,39 @@ _Note:_ Adding, removing users, setting, changing the rate limits can only be do
 | :-- | :-- | :-- | :-- |
 | `page` | The page of the response | `optional` defaults to `1` | |
 
+### All Units API
+
+- Method: `GET`
+- Base URL: `/api/v1/list/units`
+- Authentication required: `true`
+
+| Query Params | Description | Comments | Sample |
+| :-- | :-- | :-- | :-- |
+| `page` | The page of the response | `optional` defaults to `1` | |
+
+### All Users API
+
+- Method: `GET`
+- Base URL: `/api/v1/list/users`
+- Authentication required: `true`
+
+| Query Params | Description | Comments | Sample |
+| :-- | :-- | :-- | :-- |
+| `page` | The page of the response | `optional` defaults to `1` | |
+
+### All Patients API
+
+- Method: `GET`
+- Base URL: `/api/v1/list/patients`
+- Authentication required: `true`
+
+| Query Params | Description | Comments | Sample |
+| :-- | :-- | :-- | :-- |
+| `page` | The page of the response | `optional` defaults to `1` | |
+| `unitId` | Name of the unit | `optional`| `HDU` |
+| `startDate` | starting time of the form in miliseconds | `optional` | `1655546340000` |
+| `endDate` | ending time of the form in miliseconds | `optional` | `1655546340000`
+
 ### Forms API
 
 - Method: `GET`
@@ -346,20 +397,20 @@ _Note:_ Adding, removing users, setting, changing the rate limits can only be do
 
 Sample request url:
 
-`/api/v1/forms?userId=xyz@zmed.com&startDate=1671703560200&endDate=1672903570203`
+`/api/v1/query/forms?userId=xyz@zmed.com&startDate=1671703560200&endDate=1672903570203`
 
 (_Note:_ for representation purposes only. Actual request should contain the Bearer token as well.)
 
 ### Device Data - Monitor API
 
 - Method: `GET`
-- Base URL: `/api/v1/query/device-data`
+- Base URL: `/api/v1/query/device-data/monitor`
 - Authentication required: `true`
 
 | Query Params | Description | Comments | Sample |
 | :-- | :-- | :-- | :-- |
 | `page` | The page of the response | `optional` defaults to `1` | |
-| `type` | The type of device data | `required` (the full list of valid values is available in a table in the next point) | `pulse_rate` |
+| `type` | The type of device data. For multiple types, pass in a comma-separated string with the valid values. | `required` (the full list of valid values is available in a table in the next point) | `pulse_rate` or or `pulse_rate,cvp` |
 | `unitId` | Name of the unit | `optional`| `HDU` |
 | `zUnitId` | Name of the unit as used by zMed | `optional` but specify only one of `zUnitId` and `unitId` | `62a71ae6951eb42813f55c19` |
 | `startDate` | starting time of the form in miliseconds | `optional` | `1655546340000` |
@@ -547,7 +598,27 @@ Sample request url:
 
 Sample request url:
 
-`/api/v1/ot/anesthesia?patientUHID=ZB00001105&page=3`
+`/api/v1/query/ot/anesthesia?patientUHID=ZB00001105&page=3`
+
+(_Note:_ for representation purposes only. Actual request should contain the Bearer token as well.)
+
+### Ambulance GPS API
+
+- Method: `GET`
+- Base URL: `/api/v1/query/ambulance/gps`
+- Authentication required: `true`
+
+| Query Params | Description | Comments | Sample |
+| :-- | :-- | :-- | :-- |
+| `page` | The page of the response | `optional` defaults to `1` | |
+| `startDate` | starting time in miliseconds | `optional` | `1655546340000` |
+| `endDate` | ending time in miliseconds | `optional` | `1655546340000` |
+| `deviceId` | Device ID | `optional` | `device_id_123` |
+| `ambulanceId` | ID of the ambulance | `optional` | `amb_003934` |
+
+Sample request url:
+
+`/api/v1/query/ambulance/gps?page=3`
 
 (_Note:_ for representation purposes only. Actual request should contain the Bearer token as well.)
 
@@ -603,19 +674,27 @@ Sample request url:
 | `429` | `Too Many Requests` | `Session rate limit exceeded` | Limits for Session id rate limiter have been reached. Please try after some time. |
 | `429` | `Too Many Requests` | `User rate limit exceeded` | Limits for User id rate limiter have been reached. Please try after some time. |
 
+### All patients query API
+
+| Status code | Status code meaning | message | Reason for error |
+| :-- | :-- | :-- | :--
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
+
 ### Forms query API
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `409` | `Conflict` | `Conflict: You cannot specify both coreFormName and formId` | Both `coreFormName` and `formId` cannot be passed (See the Forms API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed (See the Forms API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both `patientId` and `patientZhrId` cannot be passed (See the Forms API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both userId and zmedUserId` | Both `userId` and `zmedUserId` cannot be passed (See the Forms API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both ipNumber and zAdmissionInfoId` | Both `ipNumber` and `zAdmissionInfoId` cannot be passed (See the Forms API Section for more details) |
-| `400` | `Bad Request` | `Bad request: Patient UHID or patientZhrId is required` | `patientUHID` or `patientZhrId` is required if `admissionInfoId` is specified. (See the Forms API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Forms API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Forms API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Forms API Section for more details) |
+| `409` | `Conflict` | `Conflict: You cannot specify both coreFormName and formId` | Both `coreFormName` and `formId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both `patientId` and `patientZhrId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both userId and zmedUserId` | Both `userId` and `zmedUserId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both ipNumber and zAdmissionInfoId` | Both `ipNumber` and `zAdmissionInfoId` cannot be passed |
+| `400` | `Bad Request` | `Bad request: Patient UHID or patientZhrId is required` | `patientUHID` or `patientZhrId` is required if `admissionInfoId` is specified. |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
@@ -628,47 +707,47 @@ Sample request url:
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed (See the Device Data API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed (See the Device Data API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both `patientId` and `patientZhrId` cannot be passed (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Device Data API Section for more details) |
+| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both `patientId` and `patientZhrId` cannot be passed |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
-| `400` | `Bad Request` | `Invalid device data type` | The specified `type` does not exist (See the Device Data API Section for more details) |
+| `400` | `Bad Request` | `Invalid device data type` | The specified `type` does not exist |
 
 ### Device Data - Anesthesia/Ventilator query API
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed (See the Bed Data API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Bed Data API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Bed Data API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Bed Data API Section for more details) |
+| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
-| `400` | `Bad Request` | `Invalid type` | The specified `type` is invalid (See the Bed Data API Section for more details) |
+| `400` | `Bad Request` | `Invalid type` | The specified `type` is invalid |
 
 ### Lab Report query API
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `409` | `Conflict` | `Conflict: You cannot specify only one of patientUHID and unitId` | if specifying `unitId`, then `patientUHID` is mandatory (See the Lab Reports API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Device Data API Section for more details) |
+| `409` | `Conflict` | `Conflict: You cannot specify only one of patientUHID and unitId` | if specifying `unitId`, then `patientUHID` is mandatory |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 
 ### ICE elements query API
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Device Data API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Device Data API Section for more details) |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
@@ -678,13 +757,13 @@ Sample request url:
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both patientId and patientZhrId cannot be passed (See the Progress Notes API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed (See the Progress Notes API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both userId and zmedUserId` | Both `userId` and `zmedUserId` cannot be passed (See the Progress Notes API Section for more details) |
-| `409` | `Conflict` | `Conflict: You cannot specify both ipNumber and zAdmissionInfoId` | Both `ipNumber` and `zAdmissionInfoId` cannot be passed (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
+| `409` | `Conflict` | `Conflict: You cannot specify both patientId and patientZhrId` | Both patientId and patientZhrId cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both unitId and zUnitId` | Both `unitId` and `zUnitId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both userId and zmedUserId` | Both `userId` and `zmedUserId` cannot be passed |
+| `409` | `Conflict` | `Conflict: You cannot specify both ipNumber and zAdmissionInfoId` | Both `ipNumber` and `zAdmissionInfoId` cannot be passed |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `Multiple patients found for the specified IP number` | Specified IP number exists for multiple patients |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
@@ -695,10 +774,10 @@ Sample request url:
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed (See the Bed Data API Section for more details) |
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
+| `400` | `Bad Request` | `Bad request: type is required` | `type` parameter is not passed |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
@@ -708,13 +787,22 @@ Sample request url:
 
 | Status code | Status code meaning | message | Reason for error |
 | :-- | :-- | :-- | :--
-| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. (See the Progress Notes API Section for more details) |
-| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. (See the Progress Notes API Section for more details) |
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
 | `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 | `400` | `Bad Request` | `No unit found for the specified unitId` | The specified `unitId` does not exist |
 | `400` | `Bad Request` | `No patient found for the specified UHID` | The specified `patientUHID` does not exist |
 | `400` | `Bad Request` | `Invalid IP number` | The specified `ipNumber` does not exist |
+
+### Ambulance GPS query API
+
+| Status code | Status code meaning | message | Reason for error |
+| :-- | :-- | :-- | :--
+| `400` | `Bad Request` | `Error processing the dates` | `startDate` and/or `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date is not a valid date` | `startDate` is not in the valid format. |
+| `400` | `Bad Request` | `The end date is not a valid date` | `endDate` is not in the valid format. |
+| `400` | `Bad Request` | `The start date cannot be after the end date` | `startDate` should always be less than `endDate` |
 
 ## Public Schema
 
