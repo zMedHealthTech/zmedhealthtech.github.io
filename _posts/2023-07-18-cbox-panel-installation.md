@@ -17,6 +17,10 @@ tags:
 author: ayush
 ---
 
+## Prerequisites
+
+- Operating System: Ubuntu 20.04
+
 If your connectivity box is not registered with zMed, the Installation Script will give you a unique cBox id. You must email the cBox ID to zMed to register and Authorize the cBox. Once the cBox is authorized by zMed, run the installation script again.
 
 ## Connectivity Box Panel Installation
